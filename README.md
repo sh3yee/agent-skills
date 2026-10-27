@@ -5,7 +5,7 @@
 ## 目录
 
 ```text
-skills/
+agent-skills/
   vue/
     create-adaptable-composable/
     vue-best-practices/
@@ -20,7 +20,7 @@ skills/
     git-weekly-report/
 ```
 
-每个类别放在 `skills/<category>/`，每个技能放在 `skills/<category>/<skill-name>/`，包含 `SKILL.md` 和所需的参考文档、脚本、资源。新增领域时增加对应分类目录；同类技能放在一起。
+每个类别放在 `<category>/`，每个技能放在 `<category>/<skill-name>/`，包含 `SKILL.md` 和所需的参考文档、脚本、资源。新增领域时增加对应分类目录；同类技能放在一起。
 
 ## 来源与范围
 
