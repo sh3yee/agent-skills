@@ -1,32 +1,39 @@
-# Codex Skills
+# Agent Skills
 
-个人技能源码仓库，用于维护、评估和扩展不同领域的 Codex skills，不限定于 Vue。
+按领域维护的个人 AI agent 技能源代码仓库，用于评估、修改和扩展技能，不绑定特定工具。
 
 ## 目录
 
 ```text
 skills/
-  <skill-name>/
-    SKILL.md
-    references/ 或 reference/   # 按各技能现有结构保留
-    scripts/                    # 按需提供
-    assets/                     # 按需提供
+  vue/
+    create-adaptable-composable/
+    vue-best-practices/
+    vue-debug-guides/
+    vue-jsx-best-practices/
+    vue-options-api-best-practices/
+    vue-pinia-best-practices/
+    vue-project-style/
+    vue-router-best-practices/
+    vue-testing-best-practices/
+  git/
+    git-weekly-report/
 ```
 
-技能统一放在 `skills/<skill-name>/`，按目录名区分用途。新增其他领域的技能沿用此结构，不增加 Vue 专属的顶层目录。现有技能之间的相对链接保持有效。
+每个类别放在 `skills/<category>/`，每个技能放在 `skills/<category>/<skill-name>/`，包含 `SKILL.md` 和所需的参考文档、脚本、资源。新增领域时增加对应分类目录；同类技能放在一起。
 
-## 初始来源
+## 来源与范围
 
-- 导入日期：2026-10-27。
-- 来源目录：`C:\Users\she\.codex\skills`。
-- 导入范围：来源目录下含 `SKILL.md` 的全部个人技能，以及它们的参考文档、脚本、资源和许可文件。
-- 不包括 Codex 管理的 `.system` 目录，也不包括插件缓存中的技能。
-- 导入时保留文件原始内容；第三方技能沿用各自的作者和许可声明。
+- 初始导入日期：2026-10-27。
+- 初始来源目录：`C:\Users\she\.codex\skills`。这只是导入来源，不代表仓库绑定该工具。
+- 当前保留 Vue 和 Git 类技能，不维护 Figma 类技能。
+- 不纳入运行工具管理的系统技能或插件缓存。
+- 分类整理保留技能原始内容、支持文件，以及第三方作者和许可声明。
 
 ## 维护方式
 
-1. 在本仓库的 `skills/` 中修改技能。
-2. 检查规则一致性、引用路径及相关脚本，再通过 Git 查看和记录差异。
-3. 只有用户明确要求安装或同步时，才将指定技能同步到运行环境。
+1. 在本仓库的相应分类目录中修改技能。
+2. 检查规则一致性、引用路径及相关脚本，通过 Git 查看和记录差异。
+3. 只有用户明确要求安装或同步时，才按目标工具要求将指定技能部署到对应位置，并检查工具依赖及兼容性。
 
-本仓库是独立副本，未与已安装目录建立软链接或自动同步。修改仓库文件不会自动影响当前安装的技能。
+本仓库是独立副本，未与任何已安装技能目录建立软链接或自动同步。这里的分类结构用于源码管理；实际安装布局以目标工具要求为准。
