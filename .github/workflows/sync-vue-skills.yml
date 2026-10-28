@@ -1,0 +1,81 @@
+name: Sync Vue skills
+
+on:
+  schedule:
+    # Every Monday at 09:23 Asia/Taipei (01:23 UTC).
+    - cron: '23 1 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: sync-vue-skills
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: repository
+
+      - name: Check out published upstream skills
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: vuejs-ai/skills
+          ref: main
+          path: upstream
+          persist-credentials: false
+
+      - name: Sync the selected skills and license
+        id: sync
+        working-directory: repository
+        shell: bash
+        run: |
+          python3 scripts/sync_vue_skills.py ../upstream
+          upstream_sha=$(git -C ../upstream rev-parse HEAD)
+          echo "upstream-sha=$upstream_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update the sync pull request
+        id: pull-request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          path: repository
+          token: ${{ github.token }}
+          base: ${{ github.event.repository.default_branch }}
+          branch: automation/sync-vue-skills
+          delete-branch: true
+          add-paths: vue/
+          commit-message: 'chore(vue): sync skills from vuejs-ai/skills'
+          title: 'chore(vue): sync skills from vuejs-ai/skills'
+          body: |
+            同步 [vuejs-ai/skills](https://github.com/vuejs-ai/skills) 的已发布技能。
+
+            上游提交：${{ steps.sync.outputs.upstream-sha }}
+            [查看上游源码](https://github.com/vuejs-ai/skills/tree/${{ steps.sync.outputs.upstream-sha }}/skills)
+
+            - 更新现有的 8 个上游技能及其支持文件，移除上游已删除的文件。
+            - 保留本仓库自有的 `vue-project-style`，不自动导入其他技能。
+            - 保留上游作者声明并同步 `vue/LICENSE.vuejs-ai`。
+
+            请检查差异后合并；工作流不会自动合并。
+
+      - name: Write run summary
+        env:
+          PR_URL: ${{ steps.pull-request.outputs.pull-request-url }}
+          UPSTREAM_SHA: ${{ steps.sync.outputs.upstream-sha }}
+        shell: bash
+        run: |
+          echo "Upstream commit: \`$UPSTREAM_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -n "$PR_URL" ]]; then
+            echo "Sync pull request: $PR_URL" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'The selected Vue skills are already up to date.' >> "$GITHUB_STEP_SUMMARY"
+          fi
